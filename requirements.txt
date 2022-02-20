@@ -1,0 +1,6 @@
+Django
+djangorestframework
+reportlab
+python-dotenv
+django-debug-toolbar
+django-mptt
