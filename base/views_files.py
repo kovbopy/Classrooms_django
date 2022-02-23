@@ -42,5 +42,5 @@ def classrooms_csv(request):
 
     for classroom in Classroom.objects.all():
         writer.writerow([classroom.name, classroom.teacher,
-                         [b for a in classroom.students.values_list("name","id") for b in a]])
+                         [b for a in classroom.students.values("username","id") for b in a]])
     return response

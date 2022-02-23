@@ -53,7 +53,7 @@ def crud_user(request, id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_classrooms(request):
     classrooms = Classroom.objects.annotate(students_count=Count("students"))
     serializer = ClassroomSerializer(classrooms, many=True)
