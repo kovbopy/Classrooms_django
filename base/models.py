@@ -7,39 +7,39 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 
 
-class BaseManager(models.Manager):# some objects can be accesible
+class BaseManager(models.Manager):  # some objects can be accesible
     def get_queryset(self):         # only from admin pannel
         return super(BaseManager, self).get_queryset().\
                               exclude(is_admin_only=True)
 
+
 class Base(models.Model):
-    id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
-    name=models.CharField(max_length=20,unique=True,db_index=True)
-    slug=models.SlugField(max_length=40,unique=True,db_index=True)
-    is_admin_only=models.BooleanField(default=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
+    name = models.CharField(max_length=20, unique=True, db_index=True)
+    slug = models.SlugField(max_length=40, unique=True, db_index=True)
+    is_admin_only = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    objects=BaseManager()
-
+    objects = BaseManager()
 
     class Meta:
         abstract = True
-        ordering = ['-updated','-created']
+        ordering = ['-updated', '-created']
 
     def __str__(self):
         return self.name
 
-    def save(self,*a,**k):
-        self.slug=slugify(self.name)
-        super().save(*a,**k)
+    def save(self, *a, **k):
+        self.slug = slugify(self.name)
+        super().save(*a, **k)
 
     def get_absolute_url(self):
-        cls_name=self.__class__.__name__.lower()
-        return reverse("base:"+cls_name,args=[self.slug])
+        cls_name = self.__class__.__name__.lower()
+        return reverse("base:"+cls_name, args=[self.slug])
 
 
 class Subject(Base):
-    is_tech = models.BooleanField(blank=True,default=False)
+    is_tech = models.BooleanField(blank=True, default=False)
 
 
 class Users(User):
@@ -48,15 +48,15 @@ class Users(User):
         ("normal", "normal"),
         ("bad", "bad")
     )
-    behavior = models.CharField(choices=CHOICES,null=True, blank=True,max_length=20)
+    behavior = models.CharField(choices=CHOICES, null=True, blank=True, max_length=20)
     picture = models.ImageField(default='pictures/default_student_pic.jpg',
                                 upload_to='pictures', blank=True)
     updated = models.DateTimeField(auto_now=True)
     is_admin_only = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural='UserTable'
-        ordering = ['-updated','-date_joined']
+        verbose_name_plural = 'UserTable'
+        ordering = ['-updated', '-date_joined']
 
     def save(self, *a, **k):
         self.slug = slugify(self.username)
@@ -72,19 +72,20 @@ class ClsManager(models.Manager):
     def get_queryset(self):
         return super(ClsManager, self).get_queryset().\
                               exclude(is_admin_only=True).\
-                              select_related('teacher','subject').\
+                              select_related('teacher', 'subject').\
                               prefetch_related('students')
 
-class Classroom(Base):
-     teacher=models.ForeignKey(User,on_delete=models.PROTECT)
-     students = models.ManyToManyField(User,related_name='students')
-     subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
-     description=models.CharField(max_length=100)
-     entries=models.PositiveSmallIntegerField(default=0)
-     objects=ClsManager()
 
-     class Meta:
-         unique_together=(('teacher','subject'),('name','subject'))
+class Classroom(Base):
+    teacher = models.ForeignKey(User, on_delete=models.PROTECT)
+    students = models.ManyToManyField(User, related_name='students')
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
+    description = models.CharField(max_length=100)
+    entries = models.PositiveSmallIntegerField(default=0)
+    objects = ClsManager()
+
+    class Meta:
+        unique_together = (('teacher', 'subject'), ('name', 'subject'))
 
 
 class CmtManager(models.Manager):
@@ -93,9 +94,10 @@ class CmtManager(models.Manager):
                           exclude(is_admin_only=True).\
                           select_related('sender', 'classroom')
 
+
 class Comment(MPTTModel):
-    id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
-    is_admin_only=models.BooleanField(default=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
+    is_admin_only = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -109,4 +111,3 @@ class Comment(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ["id"]
-

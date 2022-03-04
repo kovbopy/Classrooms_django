@@ -20,7 +20,7 @@ from base.admin import classroom_site
 urlpatterns = [
     path('admin/classroom/', classroom_site.urls),
     path('admin/all/', admin.site.urls),
-    path('',include('base.urls',namespace='base')),
+    path('', include('base.urls',namespace='base')),
     path('api/', include('base.api.urls')),
     path('__debug__/', include('debug_toolbar.urls'))
 ]

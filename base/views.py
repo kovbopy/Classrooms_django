@@ -64,7 +64,7 @@ def HomePage(request):
     subclass_count = subclass_search.count()
 
     return render(request, 'templates/home_page.html', {'name_search': subclass_search,
-                                                   'name_count': subclass_count, })
+                                                        'name_count': subclass_count, })
 
 
 # You can create your own subject or pick one that already exists
@@ -84,11 +84,11 @@ def CreateClassroom(request):
     return render(request, 'templates/create_classroom.html')
 
 
-#will show 3 classrooms that a user visited lately, users can leave comments
+# will show 3 classrooms that a user visited lately, users can leave comments
 @login_required(login_url='login')
 def PageClassroom(request, slug):
-    classroom=Classroom.objects.get(slug=slug)
-    classroom.entries=F('entries') + 1
+    classroom = Classroom.objects.get(slug=slug)
+    classroom.entries = F('entries') + 1
     classroom.save()
 
     recently_viewed_classrooms = None
@@ -111,7 +111,7 @@ def PageClassroom(request, slug):
     students = classroom.students.all()
     comments = classroom.comment_set.all()
     teacher = classroom.teacher
-    current_user=request.user
+    current_user = request.user
 
     if request.method == 'POST':
         comment = Comment.objects.create(
@@ -147,7 +147,7 @@ def UserProfile(request, id):
 @login_required(login_url='login')
 def UpdateClassroom(request, slug):
     try:
-        classroom = Classroom.objects.get(slug=slug,teacher=request.user)
+        classroom = Classroom.objects.get(slug=slug, teacher=request.user)
     except:
         return HttpResponse(f'Classrom with the slug "{slug}" does not exist')
 
@@ -196,7 +196,7 @@ def DeleteUser(request):
 @login_required(login_url='login')
 def DeleteClassroom(request, slug):
     try:
-        classroom = Classroom.objects.get(slug=slug,teacher=request.user)
+        classroom = Classroom.objects.get(slug=slug, teacher=request.user)
     except:
         return HttpResponse(f'Classroom with the slug "{slug}" does not exist')
 
@@ -208,10 +208,9 @@ def DeleteClassroom(request, slug):
 
 @login_required(login_url='login')
 def DeleteMessage(request, id):
-    comment = Comment.objects.get(id=id,sender=request.user)
+    comment = Comment.objects.get(id=id, sender=request.user)
 
     if request.method == 'POST':
         comment.delete()
         return redirect('base:home')
     return render(request, 'base/delete_comment.html', {'comment': comment})
-

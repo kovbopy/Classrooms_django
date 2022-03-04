@@ -20,13 +20,12 @@ class UserRegisterForm(ModelForm):
         return username
 
 
-
 class ClassroomForm(ModelForm):
     class Meta:
         model = Classroom
-        exclude=['slug','updated','created']
-        widgets={'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Classroom name'}),
-                 'description':forms.Textarea(attrs={'rows':3})}
+        exclude = ['slug', 'updated', 'created']
+        widgets = {'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Classroom name'}),
+                   'description': forms.Textarea(attrs={'rows': 3})}
 
     def clean_name(self):
         name = self.cleaned_data['name'].lower()
@@ -43,12 +42,12 @@ class UpdateUserForm(ModelForm):
 
     class Meta:
         model = Users
-        fields = ['username','password','picture']
+        fields = ['username', 'password', 'picture']
 
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.fields['username'].widgets.attrs.update({'class':'form-control','placeholder':'Your name'})
-        self.fields['username'].label='Update Username'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widgets.attrs.update({'class': 'form-control', 'placeholder': 'Your name'})
+        self.fields['username'].label = 'Update Username'
         self.fields['password'].widgets.attrs.update({'class': 'form-control', 'placeholder': 'Your password'})
         self.fields['password'].label = 'Update Password'
 

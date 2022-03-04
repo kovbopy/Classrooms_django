@@ -38,9 +38,9 @@ def classrooms_csv(request):
     response['Content-Disposition'] = 'attachment; filename=classrooms.csv'
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Teacher','Students'])
+    writer.writerow(['Name', 'Teacher', 'Students'])
 
     for classroom in Classroom.objects.all():
         writer.writerow([classroom.name, classroom.teacher,
-                         [b for a in classroom.students.values("username","id") for b in a]])
+                         [b for a in classroom.students.values("username", "id") for b in a]])
     return response
